@@ -11,7 +11,6 @@ rl.on('line',(lineString) => {
     const popu = parseInt(columns[7]);
     if (year == 2010 | year == 2015) {
         let value = map.get(prefecture);
-        console.log("map.get(prefecture);" + map.get(prefecture));
         if(!value) {
             value = {
                 popu10 : 0,
@@ -30,5 +29,15 @@ rl.on('line',(lineString) => {
  });
 rl.resume();
 rl.on('close', () => {
-    console.log(map);
+    for (let pair of map) {
+        const value = pair[1];
+        value.change = value.popu15 / value.popu10;
+    }
+    const rankingArray = Array.from(map).sort((pair1,pair2) => {
+        return pair2[1].change - pair1[1].change;
+    });
+    const rankingStrings = rankingArray.map((pair) => {
+        return pair[0] + ':' + pair[1].popu10 + '=>' + pair[1].popu15 + '変化率:' + pair[1].change;
+    });
+    console.log(rankingArray);
 })
